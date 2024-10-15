@@ -1,4 +1,5 @@
 ## System control
+**Luci app syscontrol untuk openwrt**
 
 [![EN](https://img.shields.io/badge/lang-EN-red.svg?style=for-the-badge)](README-EN.md)
 [![GitHub Downloads](https://img.shields.io/github/downloads/bobbyunknown/luci-app-syscontrol/total?style=for-the-badge&logo=github)](https://github.com/bobbyunknown/luci-app-syscontrol/releases)
@@ -10,11 +11,11 @@
 
 
 ### Fitur
-- Release ram "tambahkan juga di menu luci"
-- Shotdown di "tambahkan juga di menu luci"
+- Release RAM (tersedia juga di menu LuCI)
+- Shutdown (tersedia juga di menu LuCI)
 - Normal reboot dan force reboot
-- Jadwal release ram
-- Menambah menu shutdown dan release ram di menu luci
+- Jadwal release RAM
+- Menambah menu shutdown dan release RAM di menu LuCI
 
 ### Install
 - Install manual silakan download di release
