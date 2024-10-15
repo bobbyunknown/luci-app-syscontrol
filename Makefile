@@ -61,8 +61,8 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/var/log
 	$(INSTALL_DATA) ./root/var/log/release_ram.log $(1)/var/log/
 
-	$(INSTALL_DIR) $(1)/www/luci-static/resources/view
-	$(CP) ./htdocs/luci-static/resources/view/* $(1)/www/luci-static/resources/view/
+	$(INSTALL_DIR) $(1)/www/luci-static/resources/view/syscontrol
+	$(CP) ./htdocs/luci-static/resources/view/* $(1)/www/luci-static/resources/view/syscontrol/
 endef
 
 define Package/$(PKG_NAME)/postinst
