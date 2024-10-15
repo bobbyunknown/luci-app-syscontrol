@@ -59,7 +59,7 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_DATA) ./root/usr/share/rpcd/acl.d/luci-app-syscontrol.json $(1)/usr/share/rpcd/acl.d/
 
 	$(INSTALL_DIR) $(1)/var/log
-	$(INSTALL_DATA) ./var/log/release_ram.log $(1)/var/log/
+	$(INSTALL_DATA) ./root/var/log/release_ram.log $(1)/var/log/
 
 	$(INSTALL_DIR) $(1)/www/luci-static/resources/view
 	$(CP) ./htdocs/luci-static/resources/view/* $(1)/www/luci-static/resources/view/
