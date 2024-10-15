@@ -62,7 +62,7 @@ jobs:
           release_tag="${{ steps.get_info.outputs.version }}"
           release_body="# 🚀 ${{ steps.get_info.outputs.PKG_NAME }} for OpenWRT
 
-          ## 📦 Release Version: \`${{ steps.get_info.outputs.version }}\`
+          ## 📦 Release Version: \`${{ steps.get_info.outputs.version }}\` beta
 
           ### 🌟 Features:
           - RAM Release (also available in LuCI menu)
@@ -73,7 +73,7 @@ jobs:
 
           > 🔔 Always ensure you're using the latest version for the best performance!
 
-          _Thank you for using ${{ steps.get_info.outputs.PKG_NAME }}! _🙏"
+          *Thank you for using ${{ steps.get_info.outputs.PKG_NAME }}!* 🙏"
 
           gh release create "$release_tag" \
             --title "$release_name" \
