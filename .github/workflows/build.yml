@@ -26,18 +26,18 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-      - name: Dapatkan Versi
-        id: get_version
+      - name: Dapatkan Versi dan Nama Paket
+        id: get_info
         run: |
           echo "version=$(grep 'PKG_VERSION:=' Makefile | awk -F '=' '{print $2}' | tr -d ' ')" >> $GITHUB_OUTPUT
+          echo "PKG_NAME=$(basename ${{ github.repository }})" >> $GITHUB_OUTPUT
 
-      - name: Siapkan SysControl
+      - name: Siapkan Paket
         run: |
           cd openwrt-sdk
-          mkdir -p package/luci-app-syscontrol
-          cp -R ../* package/luci-app-syscontrol/
+          git clone -q https://github.com/${{ github.repository }} package/${{ steps.get_info.outputs.PKG_NAME }}
 
-      - name: Build SysControl
+      - name: Build Paket
         id: build
         run: |
           cd openwrt-sdk && make defconfig
@@ -47,9 +47,9 @@ jobs:
           sed -i 's/# CONFIG_NO_STRIP is not set/CONFIG_NO_STRIP=y/' .config
           sed -i 's/CONFIG_USE_STRIP=y/# CONFIG_USE_STRIP is not set/' .config
           sed -i 's/CONFIG_USE_SSTRIP=y/# CONFIG_USE_SSTRIP is not set/' .config
-          make package/luci-app-syscontrol/compile V=s -j$(nproc) || echo "BUILD_FAILED=true" >> $GITHUB_ENV
+          make package/${{ steps.get_info.outputs.PKG_NAME }}/compile V=s -j$(nproc) || echo "BUILD_FAILED=true" >> $GITHUB_ENV
           if [ "${{ env.BUILD_FAILED }}" != "true" ]; then
-            mv bin/packages/x86_64/base/luci-app-syscontrol*.ipk ../syscontrol-${{ steps.get_version.outputs.version }}_beta_all.ipk
+            mv bin/packages/x86_64/base/${{ steps.get_info.outputs.PKG_NAME }}*.ipk ../${{ steps.get_info.outputs.PKG_NAME }}-${{ steps.get_info.outputs.version }}_beta_all.ipk
           fi
 
       - name: Buat Rilis
@@ -58,11 +58,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           release_date=$(date +'%y%m%d')
-          release_name="SysControl-${release_date}"
-          release_tag="${{ steps.get_version.outputs.version }}"
-          release_body="# 🚀 SysControl for OpenWRT
+          release_name="${{ steps.get_info.outputs.PKG_NAME }}-${release_date}"
+          release_tag="${{ steps.get_info.outputs.version }}"
+          release_body="# 🚀 ${{ steps.get_info.outputs.PKG_NAME }} for OpenWRT
 
-          ## 📦 Release Version: \`${{ steps.get_version.outputs.version }}\`
+          ## 📦 Release Version: \`${{ steps.get_info.outputs.version }}\`
 
           ### 🌟 Features:
           - RAM Release (also available in LuCI menu)
@@ -73,7 +73,7 @@ jobs:
 
           > 🔔 Always ensure you're using the latest version for the best performance!
 
-          _Thank you for using Luci App SysControl! _🙏"
+          _Thank you for using ${{ steps.get_info.outputs.PKG_NAME }}! _🙏"
 
           gh release create "$release_tag" \
             --title "$release_name" \
@@ -85,6 +85,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload ${{ steps.get_version.outputs.version }} \
-            ./syscontrol-${{ steps.get_version.outputs.version }}_all.ipk
-
+          gh release upload ${{ steps.get_info.outputs.version }} \
+            ./${{ steps.get_info.outputs.PKG_NAME }}-${{ steps.get_info.outputs.version }}_beta_all.ipk
