@@ -22,13 +22,14 @@ return view.extend({
  handleReset: null,
 
  load: function() {
-  return Promise.all([
-   L.resolveDefault(fs.exec('/bin/sync', null), null),
-   L.resolveDefault(fs.exec('/sbin/sysctl', ['-w', 'vm.drop_caches=3']), null),
-  ]);
+  fs.exec('/usr/bin/ram_release.sh', ['release']);
+  
+  return null;
  },
 
- render: function () {
+ render: function() {
   window.location.href = '/cgi-bin/luci/admin/system/syscontrol';
+  
+  return E('div');
  }
 });

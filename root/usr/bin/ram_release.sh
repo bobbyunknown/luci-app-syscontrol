@@ -23,7 +23,7 @@ PID_FILE="/var/run/ram_release.pid"
 log_message() {
     local timestamp=$(TZ='Asia/Jakarta' date +"%Y-%m-%d %H:%M:%S %Z")
     echo "$timestamp: $1" >> "$LOG_FILE"
-    logger -t "RAM Release" "$1"
+    logger -t "RAM Release" -- "$1"
 }
 
 get_config() {
@@ -54,12 +54,49 @@ update_cron() {
 
 release_ram() {
     log_message "RAM release started"
+    
+    log_memory_state() {
+        local state=$1
+        log_message "$state cleaning (in MB):"
+        free | awk '
+        /^Mem:/ {
+            total=$2/1024; used=$3/1024; free=$4/1024; shared=$5/1024; 
+            buff_cache=$6/1024; available=$7/1024;
+            printf "  Total RAM: %.1f MB\n", total;
+            printf "  Used RAM: %.1f MB (%.1f%%)\n", used, (used/total*100);
+            printf "  Free RAM: %.1f MB\n", free;
+            printf "  Shared RAM: %.1f MB\n", shared;
+            printf "  Buff/Cache: %.1f MB\n", buff_cache;
+            printf "  Available RAM: %.1f MB\n", available;
+        }' | while read line; do log_message "$line"; done
+    }
+    
+    before_clean=$(free | awk '/^Mem:/ {printf "%.1f %.1f %.1f %.1f %.1f", $2/1024, $3/1024, $4/1024, $6/1024, $7/1024}')
+    log_memory_state "Before"
+    
     sync
     echo 3 > /proc/sys/vm/drop_caches
     swapoff -a && swapon -a
     echo 1 > /proc/sys/vm/compact_memory
-    free_result=$(free -m)
-    log_message "RAM release executed. Current memory state:\n$free_result"
+    
+    sleep 5
+    
+    after_clean=$(free | awk '/^Mem:/ {printf "%.1f %.1f %.1f %.1f %.1f", $2/1024, $3/1024, $4/1024, $6/1024, $7/1024}')
+    log_memory_state "After"
+    
+    set -- $before_clean
+    before_total=$1; before_used=$2; before_free=$3; before_buffers_cache=$4; before_available=$5
+    
+    set -- $after_clean
+    after_total=$1; after_used=$2; after_free=$3; after_buffers_cache=$4; after_available=$5
+    
+    log_message "Changes (in MB):"
+    awk -v bu="$before_used" -v au="$after_used" 'BEGIN {printf "  Used RAM change: %.1f MB\n", au - bu}' | while read line; do log_message "$line"; done
+    awk -v bf="$before_free" -v af="$after_free" 'BEGIN {printf "  Free RAM change: %.1f MB\n", af - bf}' | while read line; do log_message "$line"; done
+    awk -v bbc="$before_buffers_cache" -v abc="$after_buffers_cache" 'BEGIN {printf "  Buff/Cache change: %.1f MB\n", abc - bbc}' | while read line; do log_message "$line"; done
+    awk -v ba="$before_available" -v aa="$after_available" 'BEGIN {printf "  Available RAM change: %.1f MB\n", aa - ba}' | while read line; do log_message "$line"; done
+    
+    log_message "RAM release completed"
 }
 
 start_service() {
