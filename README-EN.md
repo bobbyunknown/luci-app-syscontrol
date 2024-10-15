@@ -1,5 +1,5 @@
-## System control
-**Luci app system control untuk openwrt**
+## System Control
+**Luci app system control for openwrt**
 
 [![EN](https://img.shields.io/badge/lang-EN-red.svg?style=for-the-badge)](README-EN.md)
 [![GitHub Downloads](https://img.shields.io/github/downloads/bobbyunknown/luci-app-syscontrol/total?style=for-the-badge&logo=github)](https://github.com/bobbyunknown/luci-app-syscontrol/releases)
@@ -10,15 +10,15 @@
 [![SanTech](https://img.shields.io/badge/SanTech-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/+TuLCASzJrVJmNzM1)
 
 
-### Fitur
-- Release RAM (tersedia juga di menu LuCI)
-- Shutdown (tersedia juga di menu LuCI)
-- Normal reboot dan force reboot
-- Jadwal release RAM
-- Menambah menu shutdown dan release RAM di menu LuCI
+### Features
+- Release RAM (also available in LuCI menu)
+- Shutdown (also available in LuCI menu)
+- Normal reboot and force reboot
+- RAM release schedule
+- Add shutdown and release RAM menu in LuCI menu
 
 ### Install
-- Install manual silakan download di release
+- For manual installation, please download from the release
 - Auto install
 ```
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/bobbyunknown/luci-app-syscontrol/refs/heads/main/install.sh)"
@@ -28,9 +28,9 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/bobbyunknown/luci-app-sy
 ### Screenshot
 
 <details>
-<summary>Jadwal Release RAM</summary>
+<summary>RAM Release Schedule</summary>
 
-![Jadwal Release RAM](img/jadwal_release_ram.png)
+![RAM Release Schedule](img/jadwal_release_ram.png)
 </details>
 
 <details>
@@ -62,4 +62,3 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/bobbyunknown/luci-app-sy
 
 ![Shutdown](img/shutdown.png)
 </details>
-
