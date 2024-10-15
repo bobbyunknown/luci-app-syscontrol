@@ -58,8 +58,8 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
 	$(INSTALL_DATA) ./root/usr/share/rpcd/acl.d/luci-app-syscontrol.json $(1)/usr/share/rpcd/acl.d/
 
-	$(INSTALL_DIR) $(1)/www/luci-static/resources/view/syscontrol
-	$(CP) ./htdocs/luci-static/resources/view/syscontrol/* $(1)/www/luci-static/resources/view/syscontrol/
+	$(INSTALL_DIR) $(1)/www/luci-static/resources/view
+	$(CP) ./htdocs/luci-static/resources/view/* $(1)/www/luci-static/resources/view/
 endef
 
 define Package/$(PKG_NAME)/postinst
