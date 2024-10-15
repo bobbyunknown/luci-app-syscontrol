@@ -35,30 +35,30 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/bobbyunknown/luci-app-sy
 <details>
 <summary>Log</summary>
 
-![Log](log.png)
+![Log](img/log.png)
 </details>
 
 <details>
 <summary>Menu</summary>
 
-![Menu](menu.png)
+![Menu](img/menu.png)
 </details>
 
 <details>
 <summary>Overview</summary>
 
-![Overview](overview.png)
+![Overview](img/overview.png)
 </details>
 
 <details>
 <summary>Reboot</summary>
 
-![Reboot](reboot.png)
+![Reboot](img/reboot.png)
 </details>
 
 <details>
 <summary>Shutdown</summary>
 
-![Shutdown](shutdown.png)
+![Shutdown](img/shutdown.png)
 </details>
 
