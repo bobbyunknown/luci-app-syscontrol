@@ -30,20 +30,36 @@ install_package() {
     echo "Menginstal $PACKAGE_NAME..."
     opkg update 
     
-    DOWNLOADED_FILE=$(get_latest_release_url)
-    if [ -z "$DOWNLOADED_FILE" ]; then
-        echo "Gagal mendapatkan atau mengunduh file. Silakan coba lagi nanti."
+    DOWNLOAD_URL=$(get_latest_release_url)
+    if [ -z "$DOWNLOAD_URL" ]; then
+        echo "Gagal mendapatkan URL unduhan. Silakan coba lagi nanti."
+        read -p "Tekan Enter untuk melanjutkan..."
+        return 1
+    fi
+    
+    FILENAME=$(basename "$DOWNLOAD_URL")
+    echo "Mengunduh $FILENAME..."
+    if ! wget -O "/tmp/$FILENAME" "$DOWNLOAD_URL"; then
+        echo "Gagal mengunduh file. Silakan periksa koneksi internet Anda."
+        read -p "Tekan Enter untuk melanjutkan..."
+        return 1
+    fi
+    
+    if [ ! -f "/tmp/$FILENAME" ]; then
+        echo "File tidak ditemukan setelah unduhan. Silakan coba lagi."
+        read -p "Tekan Enter untuk melanjutkan..."
         return 1
     fi
     
     echo "Menginstal paket..."
-    if ! opkg install "$DOWNLOADED_FILE"; then
+    if ! opkg install "/tmp/$FILENAME"; then
         echo "Gagal menginstal paket. Silakan coba opsi force install."
-        rm -f "$DOWNLOADED_FILE"
+        rm -f "/tmp/$FILENAME"
+        read -p "Tekan Enter untuk melanjutkan..."
         return 1
     fi
     
-    rm -f "$DOWNLOADED_FILE"
+    rm -f "/tmp/$FILENAME"
     echo "Instalasi $PACKAGE_NAME selesai."
     read -p "Tekan Enter untuk melanjutkan..."
 }
