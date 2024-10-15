@@ -46,6 +46,9 @@ define Build/Compile
 endef
 
 define Package/$(PKG_NAME)/install
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) ./root/etc/config/77_syscontrol $(1)/etc/config/
+
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./root/etc/init.d/ram_release $(1)/etc/init.d/
 
