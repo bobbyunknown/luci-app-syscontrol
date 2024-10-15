@@ -15,31 +15,34 @@ get_latest_release_url() {
     
     if [ ! -z "$DOWNLOAD_URL" ]; then
         FILENAME=$(basename "$DOWNLOAD_URL")
-        echo "Mengunduh $FILENAME..."
-        if curl -L -o "/tmp/$FILENAME" "$DOWNLOAD_URL"; then
-            echo "/tmp/$FILENAME"
-        else
-            echo ""
-        fi
+        echo "$DOWNLOAD_URL|$FILENAME"
     else
         echo ""
     fi
 }
 
+check_system_resources() {
+    FREE_SPACE=$(df -h /tmp | awk 'NR==2 {print $4}')
+    echo "Ruang disk tersedia di /tmp: $FREE_SPACE"
+}
+
 install_package() {
+    check_system_resources
     echo "Menginstal $PACKAGE_NAME..."
     opkg update 
     
-    DOWNLOAD_URL=$(get_latest_release_url)
-    if [ -z "$DOWNLOAD_URL" ]; then
-        echo "Gagal mendapatkan URL unduhan. Silakan coba lagi nanti."
+    RELEASE_INFO=$(get_latest_release_url)
+    if [ -z "$RELEASE_INFO" ]; then
+        echo "Gagal mendapatkan informasi rilis. Silakan coba lagi nanti."
         read -p "Tekan Enter untuk melanjutkan..."
         return 1
     fi
     
-    FILENAME=$(basename "$DOWNLOAD_URL")
+    DOWNLOAD_URL=$(echo "$RELEASE_INFO" | cut -d'|' -f1)
+    FILENAME=$(echo "$RELEASE_INFO" | cut -d'|' -f2)
+    
     echo "Mengunduh $FILENAME..."
-    if ! wget -O "/tmp/$FILENAME" "$DOWNLOAD_URL"; then
+    if ! curl -L -o "/tmp/$FILENAME" "$DOWNLOAD_URL"; then
         echo "Gagal mengunduh file. Silakan periksa koneksi internet Anda."
         read -p "Tekan Enter untuk melanjutkan..."
         return 1
@@ -50,6 +53,9 @@ install_package() {
         read -p "Tekan Enter untuk melanjutkan..."
         return 1
     fi
+    
+    echo "File yang diunduh: /tmp/$FILENAME"
+    ls -l "/tmp/$FILENAME"
     
     echo "Menginstal paket..."
     if ! opkg install "/tmp/$FILENAME"; then
@@ -65,31 +71,41 @@ install_package() {
 }
 
 force_install_package() {
+    check_system_resources
     echo "Melakukan force install $PACKAGE_NAME..."
     opkg update
     
-    DOWNLOAD_URL=$(get_latest_release_url)
-    if [ -z "$DOWNLOAD_URL" ]; then
-        echo "Gagal mendapatkan URL unduhan. Silakan coba lagi nanti."
+    RELEASE_INFO=$(get_latest_release_url)
+    if [ -z "$RELEASE_INFO" ]; then
+        echo "Gagal mendapatkan informasi rilis. Silakan coba lagi nanti."
+        read -p "Tekan Enter untuk melanjutkan..."
         return 1
     fi
     
-    FILENAME=$(basename "$DOWNLOAD_URL")
+    DOWNLOAD_URL=$(echo "$RELEASE_INFO" | cut -d'|' -f1)
+    FILENAME=$(echo "$RELEASE_INFO" | cut -d'|' -f2)
+    
     echo "Mengunduh $FILENAME..."
-    if ! wget -O "/tmp/$FILENAME" "$DOWNLOAD_URL"; then
+    if ! curl -L -o "/tmp/$FILENAME" "$DOWNLOAD_URL"; then
         echo "Gagal mengunduh file. Silakan periksa koneksi internet Anda."
+        read -p "Tekan Enter untuk melanjutkan..."
         return 1
     fi
     
     if [ ! -f "/tmp/$FILENAME" ]; then
         echo "File tidak ditemukan setelah unduhan. Silakan coba lagi."
+        read -p "Tekan Enter untuk melanjutkan..."
         return 1
     fi
+    
+    echo "File yang diunduh: /tmp/$FILENAME"
+    ls -l "/tmp/$FILENAME"
     
     echo "Melakukan force install paket..."
     if ! opkg install --force-reinstall "/tmp/$FILENAME"; then
         echo "Gagal melakukan force install paket."
         rm -f "/tmp/$FILENAME"
+        read -p "Tekan Enter untuk melanjutkan..."
         return 1
     fi
     
