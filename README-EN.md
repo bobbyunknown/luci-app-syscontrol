@@ -1,7 +1,6 @@
 ## System Control
 **Luci app system control for openwrt**
 
-[![EN](https://img.shields.io/badge/lang-EN-red.svg?style=for-the-badge)](README-EN.md)
 [![GitHub Downloads](https://img.shields.io/github/downloads/bobbyunknown/luci-app-syscontrol/total?style=for-the-badge&logo=github)](https://github.com/bobbyunknown/luci-app-syscontrol/releases)
 [![GitHub Views](https://img.shields.io/badge/VIEWS-973-brightgreen?style=for-the-badge&logo=github)](https://github.com/bobbyunknown/luci-app-syscontrol)
 
