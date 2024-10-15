@@ -18,7 +18,7 @@ PKG_RELEASE:=1
 
 PKG_MAINTAINER:=BobbyUnknown <bobbyun.known88@gmail.com>
 
-LUCI_TITLE:=LuCI Support for SysControl
+LUCI_TITLE:=LuCI for System Control
 LUCI_DEPENDS:=+luci-base
 LUCI_PKGARCH:=all
 
@@ -34,7 +34,7 @@ define Package/$(PKG_NAME)
 endef
 
 define Package/$(PKG_NAME)/description
-  LuCI interface for SysControl, a tool for managing and configuring the system.
+  LuCI interface for System Control, a tool for managing the system.
 endef
 
 define Build/Prepare
@@ -53,10 +53,13 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_BIN) ./root/usr/bin/ram_release.sh $(1)/usr/bin/
 
 	$(INSTALL_DIR) $(1)/usr/share/luci/menu.d
-	$(INSTALL_DATA) ./root/usr/share/luci/menu.d/luci-app-syscontrol.json $(1)/usr/share/luci/menu.d/
+	$(INSTALL_DATA) ./root/usr/share/luci/menu.d/* $(1)/usr/share/luci/menu.d/
 
 	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
 	$(INSTALL_DATA) ./root/usr/share/rpcd/acl.d/luci-app-syscontrol.json $(1)/usr/share/rpcd/acl.d/
+
+	$(INSTALL_DIR) $(1)/var/log
+	$(INSTALL_DATA) ./var/log/release_ram.log $(1)/var/log/
 
 	$(INSTALL_DIR) $(1)/www/luci-static/resources/view
 	$(CP) ./htdocs/luci-static/resources/view/* $(1)/www/luci-static/resources/view/
