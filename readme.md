@@ -30,7 +30,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/bobbyunknown/luci-app-sy
 <details>
 <summary>Jadwal Release RAM</summary>
 
-![Jadwal Release RAM](jadwal_release_ram.png)
+![Jadwal Release RAM](img/jadwal_release_ram.png)
 </details>
 
 <details>
